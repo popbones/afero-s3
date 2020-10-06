@@ -264,7 +264,11 @@ func (f *File) seekRead(offset int64, whence int) (int64, error) {
 	case io.SeekCurrent:
 		startByte = f.streamReadOffset + offset
 	case io.SeekEnd:
-		startByte = f.cachedInfo.Size() - offset
+		if offset > 0 {
+			startByte = f.cachedInfo.Size() - offset
+		} else if {
+			startByte = f.cachedInfo.Size() + offset
+		}
 	}
 
 	if err := f.streamRead.Close(); err != nil {
